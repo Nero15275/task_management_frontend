@@ -1,0 +1,80 @@
+<div class="dashboard-layout">
+  
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="logo-icon">🚀</span>
+      <span class="logo-text">TaskGrid</span>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a routerLink="/dashboard" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">📊</span>
+        <span class="menu-text">Overview Feed</span> 
+      </a>
+      
+      <a routerLink="/users" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">👥</span>
+        <span class="menu-text">Team Directory</span> 
+      </a>
+<!-- 
+      <a routerLink="/analytics" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">📈</span>
+        <span class="menu-text">Analytics</span>
+      </a> -->
+
+      <a routerLink="/tasks" routerLinkActive="active" class="menu-item">
+        <span class="menu-icon">⚙️</span>
+        <span class="menu-text">tasks</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-avatar">RD</div>
+      <div class="user-details">
+        <span class="user-name">Ranit Dey</span>
+        <span class="user-role">Manager</span> 
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-container">
+    
+    <header class="navbar">
+      <div class="navbar-left">
+        <button class="sidebar-toggle" aria-label="Toggle Sidebar">
+          ☰
+        </button>
+        <span class="breadcrumb">Workspace / Tasks</span>
+      </div>
+
+      <div class="navbar-right">
+        <button class="navbar-action-btn" title="Create Task">
+          <span class="btn-icon">＋</span> Create Task
+        </button>
+
+        <div class="notification-bell" title="Notifications">
+          🔔
+          <span class="badge-dot"></span>
+        </div>
+
+        <button class="btn-logout" title="Sign Out">
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <main class="content-body">
+      <div class="page-header">
+        <!-- <h1>Overview Feed</h1>
+        <p>Keep track of tasks assigned to your team members and yourself.</p> 
+      </div>
+      
+      <div class="demo-card">
+        <h3>Task List Interface</h3>
+        <p>This is where your responsive task grid or list view components will render dynamically.</p>  -->
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+
+  </div>
+</div>

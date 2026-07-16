@@ -1,0 +1,145 @@
+@import '../../../../styles.scss';
+
+.form-container {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid $border-color;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-header {
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid $border-color;
+  padding-bottom: 1rem;
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: $text-primary;
+    margin-bottom: 0.35rem;
+  }
+
+  p {
+    color: $text-secondary;
+    font-size: 0.85rem;
+  }
+}
+
+.admin-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: $text-primary;
+  }
+
+  input, select {
+    padding: 0.75rem 1rem;
+    border: 1px solid $border-color;
+    border-radius: 6px;
+    font-size: 0.925rem;
+    outline: none;
+    background-color: white;
+    transition: all 0.15s ease;
+
+    &:focus {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+  }
+
+  .field-invalid {
+    border-color: #ef4444;
+    background-color: #fef2f2;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+  }
+}
+
+// 1. Validations styling
+.error-wrapper {
+  margin-top: 0.15rem;
+}
+
+.error-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ef4444;
+}
+
+// 2. Action Buttons Footer Area
+.form-actions-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid $border-color;
+  padding-top: 1.5rem;
+  margin-top: 1rem;
+
+  .btn-cancel-action {
+    padding: 0.75rem 1.5rem;
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: #e2e8f0;
+    }
+  }
+
+  .btn-submit-action {
+    padding: 0.75rem 1.5rem;
+    background-color: $primary-color;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    transition: background-color 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background-color: $primary-hover;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// 3. Dynamic Information Label Helper
+.role-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  background-color: $background-light;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: $text-secondary;
+  border-left: 3px solid $primary-color;
+
+  .hint-icon {
+    font-size: 0.9rem;
+  }
+}

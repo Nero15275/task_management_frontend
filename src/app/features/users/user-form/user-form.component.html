@@ -1,0 +1,97 @@
+<div class="form-container">
+  <div class="form-header">
+    <h2>{{ isEditMode ? 'Modify User Profile' : 'Register New User Directory' }}</h2>
+    <p>Configure access control and baseline account properties.</p>
+  </div>
+
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="admin-user-form">
+    
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input 
+        id="username" 
+        type="text" 
+        formControlName="username" 
+        placeholder="Enter clean profile username"
+        [class.field-invalid]="userForm.get('username')?.touched && userForm.get('username')?.invalid"
+      />
+      <div class="error-wrapper" *ngIf="userForm.get('username')?.touched && userForm.get('username')?.invalid">
+        <span class="error-label" *ngIf="userForm.get('username')?.errors?.['required']">
+          Username is required.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input 
+        id="email" 
+        type="email" 
+        formControlName="email" 
+        placeholder="user@organization.com"
+        [class.field-invalid]="userForm.get('email')?.touched && userForm.get('email')?.invalid"
+      />
+      <div class="error-wrapper" *ngIf="userForm.get('email')?.touched && userForm.get('email')?.invalid">
+        <span class="error-label" *ngIf="userForm.get('email')?.errors?.['required']">
+          Email is required.
+        </span>
+        <span class="error-label" *ngIf="userForm.get('email')?.errors?.['email']">
+          Please provide a valid structural email address.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group" *ngIf="!isEditMode">
+      <label for="password">Initial Password</label>
+      <input 
+        id="password" 
+        type="password" 
+        formControlName="password" 
+        placeholder="Min 6 characters recommended"
+        [class.field-invalid]="userForm.get('password')?.touched && userForm.get('password')?.invalid"
+      />
+      <div class="error-wrapper" *ngIf="userForm.get('password')?.touched && userForm.get('password')?.invalid">
+        <span class="error-label" *ngIf="userForm.get('password')?.errors?.['required']">
+          A starting login password is required.
+        </span>
+        <span class="error-label" *ngIf="userForm.get('password')?.errors?.['minlength']">
+          Password must contain at least 6 characters.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="role">Assigned Authorization Role</label>
+      <select 
+        id="role" 
+        formControlName="role"
+        [class.field-invalid]="userForm.get('role')?.touched && userForm.get('role')?.invalid"
+      >
+        <option value="" disabled selected>-- Select Access Tier --</option>
+        <option value="Employee">Employee (Standard Access)</option>
+        <option value="Team Lead">Team Lead (Supervisorial Access)</option>
+        <option value="Manager">Manager (Global Directory Control)</option>
+      </select>
+      
+      <div class="role-hint">
+        <span class="hint-icon">💡</span>
+        <ng-container [ngSwitch]="userForm.get('role')?.value">
+          <span *ngSwitchCase="'Manager'">Managers can view and reassign all system tasks[cite: 14].</span>
+          <span *ngSwitchCase="'Team Lead'">Team Leads assign tasks only to teammates.</span>
+          <span *ngSwitchCase="'Employee'">Employees autogenerate tasks to themselves[cite: 17].</span>
+          <span *ngSwitchDefault>Assigning a role scopes structural access across the application[cite: 11].</span>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="form-actions-footer">
+      <button type="button" (click)="onCancel()" class="btn-cancel-action">
+        Cancel
+      </button>
+      <button type="submit" [disabled]="userForm.invalid" class="btn-submit-action">
+        {{ isEditMode ? 'Update Account Settings' : 'Create User Account' }}
+      </button>
+    </div>
+
+  </form>
+</div>

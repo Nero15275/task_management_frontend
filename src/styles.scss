@@ -1,1 +1,44 @@
 /* You can add global styles to this file, and also import other style files */
+/* frontend/src/styles.scss */
+
+// Modern Color Palette
+$primary-color: #4f46e5;      // Indigo
+$primary-hover: #4338ca;
+$background-dark: #0f172a;    // Dark Slate
+$background-light: #f8fafc;   // Cool Grey
+$surface-color: #ffffff;
+$border-color: #e2e8f0;
+$text-primary: #1e293b;
+$text-secondary: #64748b;
+
+// Status Badge Colors
+$color-pending: #f59e0b;      // Amber
+$color-completed: #10b981;    // Emerald
+
+// Global Box Sizing & Defaults
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: $background-light;
+  color: $text-primary;
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: $primary-color;
+  &:hover {
+    color: $primary-hover;
+  }
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}

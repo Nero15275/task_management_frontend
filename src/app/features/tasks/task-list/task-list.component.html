@@ -1,0 +1,110 @@
+
+<div class="task-list-wrapper">
+  
+  <!-- Feed Header Controls & Status Filters -->
+  <div class="feed-header">
+    <div class="header-title">
+      <h2>Task Workspace</h2>
+      <p>Monitor, track, and process operational task pipelines.</p>
+    </div>
+    
+    <!-- Filter Navigation Controls -->
+    <div class="task-filters">
+      <button 
+        [class.active]="activeFilter === 'all'" 
+        (click)="changeFilter('all')" 
+        class="filter-btn">
+        All Tasks
+      </button>
+      <button 
+        [class.active]="activeFilter === 'pending'" 
+        (click)="changeFilter('pending')" 
+        class="filter-btn pending-filter">
+        ⏳ Pending
+      </button>
+      <button 
+        [class.active]="activeFilter === 'completed'" 
+        (click)="changeFilter('completed')" 
+        class="filter-btn completed-filter">
+        ✅ Completed
+      </button>
+    </div>
+  </div>
+
+  <!-- Dynamic Tasks Layout Grid -->
+  <div class="tasks-grid" *ngIf="filteredTasks.length > 0; else emptyTaskState">
+    <div 
+      *ngFor="let task of filteredTasks" 
+      class="task-card" 
+      [class.status-completed]="task.status === 'completed'"
+    >
+      <!-- Task Heading Line -->
+      <div class="task-card-header">
+        <h3 class="task-title">{{ task.title }}</h3>
+        <span class="status-badge" [attr.data-status]="task.status">
+          {{ task.status }}
+        </span>
+      </div>
+
+      <!-- Task Body Content -->
+      <p class="task-description">{{ task.description }}</p>
+
+      <!-- Task Organizational Metadata Hierarchy -->
+      <div class="task-metadata">
+        <div class="meta-row">
+          <span class="meta-label">Created By:</span>
+          <span class="meta-value font-highlight">{{ task.createdBy?.username || 'System' }}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Assigned To:</span>
+          <span class="meta-value assignment-pill">{{ task.assignedTo?.username || 'Unassigned' }}</span>
+        </div>
+        <div class="meta-row timeline">
+          <span class="meta-label">Last Updated:</span>
+          <span class="meta-value">{{ task.updatedAt | date:'mediumDate' }}</span>
+        </div>
+      </div>
+
+      <!-- Task Card Control Actions -->
+      <div class="task-card-actions">
+        <!-- Mark Complete is available for anyone assigned to/owning a pending task -->
+        <button 
+          *ngIf="task.status === 'pending'" 
+          (click)="onMarkComplete(task)" 
+          class="action-btn complete-trigger"
+        >
+          ✓ Complete Task
+        </button>
+        <span *ngIf="task.status === 'completed'" class="completion-checkpoint">
+          🎉 Task Resolved
+        </span>
+
+        <!-- Management Controls (Modify/Delete Context) -->
+        <div class="privileged-actions">
+          <button (click)="onEdit(task)" class="icon-btn edit-btn" title="Edit Task Details">
+            ✏️ Edit
+          </button>
+          <!-- Delete visibility constrained dynamically via TS role properties -->
+          <button 
+            *ngIf="canUserDeleteTask(task)" 
+            (click)="onDelete(task._id)" 
+            class="icon-btn delete-btn" 
+            title="Remove Task Permanently"
+          >
+            🗑️ Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty Context Placeholder Template -->
+  <ng-template #emptyTaskState>
+    <div class="empty-feed-card">
+      <span class="empty-icon">📂</span>
+      <h4>No Tasks Listed</h4>
+      <p>There are no tasks matching the selected filter criteria found in your workspace.</p>
+    </div>
+  </ng-template>
+
+</div>

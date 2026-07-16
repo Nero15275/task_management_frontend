@@ -1,0 +1,85 @@
+<div class="user-list-container">
+  <div class="list-controls">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Search users by name or email..." 
+        (input)="onSearch($event)"
+      />
+    </div>
+
+    <div class="filter-box">
+      <select (change)="onRoleFilterChange($event)">
+        <option value="all">All Roles</option>
+        <option value="Manager">Managers</option>
+        <option value="Team Lead">Team Leads</option>
+        <option value="Employee">Employees</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-responsive">
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Email</th>
+            <th>Role Status</th>
+            <th>Permissions Scope</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUsers" class="user-row">
+            <td>
+              <div class="user-profile-meta">
+                <div class="user-avatar-small">
+                  {{ user.username.substring(0, 2) | uppercase }}
+                </div>
+                <div class="user-identity">
+                  <span class="user-name">{{ user.username }}</span>
+                  <span class="user-id">ID: {{ user._id }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="user-email">{{ user.email }}</span>
+            </td>
+            <td>
+              <span class="role-badge" [attr.data-role]="user.role">
+                {{ user.role }}
+              </span>
+            </td>
+            <td>
+              <span class="scope-text">
+                <ng-container [ngSwitch]="user.role">
+                  <span *ngSwitchCase="'Manager'">Full directory visibility & task reassignment</span>
+                  <span *ngSwitchCase="'Team Lead'">Manages assigned team members' tasks</span>
+                  <span *ngSwitchCase="'Employee'">Self-assigned tasks only</span>
+                </ng-container>
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button (click)="onEditUser(user)" class="btn-action edit" title="Edit Profile/Role">
+                  ✏️ Edit
+                </button>
+                <button (click)="onDeleteUser(user._id)" class="btn-action delete" title="Delete User Account">
+                  🗑️ Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredUsers.length === 0">
+            <td colspan="5" class="empty-table-state">
+              <p>No users match your active search or filter criteria.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

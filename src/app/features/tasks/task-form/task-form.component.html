@@ -1,0 +1,84 @@
+<div class="task-form-container">
+  <!-- Interactive Form Heading Context -->
+  <div class="form-header">
+    <h2>{{ isEditMode ? 'Modify Task Properties' : 'Create Assignment Task' }}</h2>
+    <p>Populate execution descriptions, workflow operational status, and assignments.</p>
+  </div>
+
+  <!-- Main Reactive Form Initialization -->
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="reactive-task-form">
+    
+    <!-- 1. Title Form Group Input -->
+    <div class="form-group">
+      <label for="title">Task Title</label>
+      <input 
+        id="title" 
+        type="text" 
+        formControlName="title" 
+        placeholder="e.g., Optimize Database Production Indexes"
+        [class.invalid-field]="taskForm.get('title')?.touched && taskForm.get('title')?.invalid"
+      />
+      <div class="validation-error" *ngIf="taskForm.get('title')?.touched && taskForm.get('title')?.invalid">
+        <span *ngIf="taskForm.get('title')?.errors?.['required']">A concise task title is mandatory.</span>
+      </div>
+    </div>
+
+    <!-- 2. Description Textarea Control -->
+    <div class="form-group">
+      <label for="description">Detailed Description</label>
+      <textarea 
+        id="description" 
+        formControlName="description" 
+        rows="4" 
+        placeholder="Provide parameters, steps, and execution requirements..."
+        [class.invalid-field]="taskForm.get('description')?.touched && taskForm.get('description')?.invalid"
+      ></textarea>
+      <div class="validation-error" *ngIf="taskForm.get('description')?.touched && taskForm.get('description')?.invalid">
+        <span *ngIf="taskForm.get('description')?.errors?.['required']">Task execution instructions are required.</span>
+      </div>
+    </div>
+
+    <!-- 3. Dynamic Assignee Dropdown Selection (Role Guarded Viewports) -->
+    <!-- Displayed solely to Managers and Team Leads per specification requirements -->
+    <div class="form-group" *ngIf="currentUserRole === 'Manager' || currentUserRole === 'Team Lead'">
+      <label for="assignedTo">Task Assignee Target</label>
+      <select id="assignedTo" formControlName="assignedTo">
+        <option value="">-- Direct Self-Assignment --</option>
+        <option *ngFor="let user of assignableUsers" [value]="user._id">
+          {{ user.username }} ({{ user.role }})
+        </option>
+      </select>
+      <div class="role-scope-tip">
+        ℹ️ 
+        <span *ngIf="currentUserRole === 'Manager'">Managers can distribute task loads to anyone globally.</span>
+        <span *ngIf="currentUserRole === 'Team Lead'">Team Leads assign tasks internally to teammates or self.</span>
+      </div>
+    </div>
+
+    <!-- Inline Info State Box for Employees -->
+    <div class="employee-notice-box" *ngIf="currentUserRole === 'Employee'">
+      <span class="notice-icon">👤</span>
+      <p><strong>Note:</strong> As an Employee, this newly generated assignment task automatically links and assigns directly to your individual queue.</p>
+    </div>
+
+    <!-- 4. Status Dropdown Select -->
+    <div class="form-group">
+      <label for="status">Initial Status State</label>
+      <select id="status" formControlName="status">
+        <option value="pending">Pending (Awaiting Action)</option>
+        <option value="completed">Completed (Resolved)</option>
+      </select>
+    </div>
+
+    <!-- Footer Form Submission Segment Buttons -->
+    <div class="form-footer-buttons">
+      <button type="button" (click)="onCancel()" class="btn-secondary-action">
+        Cancel Action
+      </button>
+      <button type="submit" [disabled]="taskForm.invalid" class="btn-primary-action">
+        {{ isEditMode ? 'Update Task Parameters' : 'Deploy Task Object' }}
+      </button>
+    </div>
+
+  </form>
+</div>
