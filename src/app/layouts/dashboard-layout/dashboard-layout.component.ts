@@ -1,13 +1,58 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AuthService } from '../../features/auth/auth.service';
+import { StorageService } from '../../core/services/storage.service';
+import { UserRole } from '../../core/models/user';
+import { CommonModule } from '@angular/common';
+import { UserService } from '../../features/users/user.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TaskService } from '../../features/tasks/task.service';
+import { GetAllTask } from '../../core/models/task';
 
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
-  imports: [RouterOutlet,RouterLink,RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
   templateUrl: './dashboard-layout.component.html',
   styleUrl: './dashboard-layout.component.scss'
 })
 export class DashboardLayoutComponent {
+
+  currentUserRole!:string|null
+  userRole=UserRole
+
+  constructor(
+    private authService:AuthService,
+    private storageService:StorageService,
+    private userService:UserService,
+    private router : Router
+  ){
+
+
+    this.currentUserRole = this.storageService.getUserRole()
+
+
+    if(this.currentUserRole !=UserRole.Manager){
+    this.userService.loadReportingUsers().pipe(takeUntilDestroyed()).subscribe({
+      next: (users) => console.log('Successfully loaded and flattened users:', users),
+      error: (err) => console.error('Failed to load reporting users:', err)
+    });}else{
+      this.userService.getAllUsers().pipe(takeUntilDestroyed()).subscribe({
+      next: (users) => console.log('Successfully loaded and flattened users:', users),
+      error: (err) => console.error('Failed to load reporting users:', err)
+    });
+    }
+
+  }
+
+  ngOnInit(){
+
+
+  }
+
+
+  logout(){
+    this.authService.logout()
+  }
 
 }

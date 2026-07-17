@@ -1,42 +1,52 @@
 
 <div class="task-list-wrapper">
-  
+
   <!-- Feed Header Controls & Status Filters -->
   <div class="feed-header">
     <div class="header-title">
       <h2>Task Workspace</h2>
       <p>Monitor, track, and process operational task pipelines.</p>
     </div>
-    
+
     <!-- Filter Navigation Controls -->
     <div class="task-filters">
-      <button 
-        [class.active]="activeFilter === 'all'" 
-        (click)="changeFilter('all')" 
+      <button
+        [class.active]="activeFilter === 'ALL'"
+        (click)="changeFilter('ALL')"
         class="filter-btn">
         All Tasks
       </button>
-      <button 
-        [class.active]="activeFilter === 'pending'" 
-        (click)="changeFilter('pending')" 
+       <button
+        [class.active]="activeFilter === TaskStatus.IN_PROGRESS"
+        (click)="changeFilter(TaskStatus.IN_PROGRESS)"
+        class="filter-btn">
+        In Progress
+      </button>
+      <button
+        [class.active]="activeFilter === TaskStatus.PENDING"
+        (click)="changeFilter(TaskStatus.PENDING)"
         class="filter-btn pending-filter">
         ⏳ Pending
       </button>
-      <button 
-        [class.active]="activeFilter === 'completed'" 
-        (click)="changeFilter('completed')" 
+      <button
+        [class.active]="activeFilter === TaskStatus.COMPLETED"
+        (click)="changeFilter(TaskStatus.COMPLETED)"
         class="filter-btn completed-filter">
         ✅ Completed
       </button>
     </div>
+
+      <button class="navbar-action-btn" title="Create Task" (click)="createTask()">
+          <span class="btn-icon">＋</span> Create Task
+        </button>
   </div>
 
   <!-- Dynamic Tasks Layout Grid -->
   <div class="tasks-grid" *ngIf="filteredTasks.length > 0; else emptyTaskState">
-    <div 
-      *ngFor="let task of filteredTasks" 
-      class="task-card" 
-      [class.status-completed]="task.status === 'completed'"
+    <div
+      *ngFor="let task of filteredTasks"
+      class="task-card"
+      [class.status-completed]="task.status === TaskStatus.COMPLETED"
     >
       <!-- Task Heading Line -->
       <div class="task-card-header">
@@ -68,14 +78,14 @@
       <!-- Task Card Control Actions -->
       <div class="task-card-actions">
         <!-- Mark Complete is available for anyone assigned to/owning a pending task -->
-        <button 
-          *ngIf="task.status === 'pending'" 
-          (click)="onMarkComplete(task)" 
+        <button
+          *ngIf="task.status === TaskStatus.IN_PROGRESS"
+          (click)="onMarkComplete(task)"
           class="action-btn complete-trigger"
         >
           ✓ Complete Task
         </button>
-        <span *ngIf="task.status === 'completed'" class="completion-checkpoint">
+        <span *ngIf="task.status === TaskStatus.COMPLETED" class="completion-checkpoint">
           🎉 Task Resolved
         </span>
 
@@ -85,10 +95,10 @@
             ✏️ Edit
           </button>
           <!-- Delete visibility constrained dynamically via TS role properties -->
-          <button 
-            *ngIf="canUserDeleteTask(task)" 
-            (click)="onDelete(task._id)" 
-            class="icon-btn delete-btn" 
+          <button
+            *ngIf="canUserDeleteTask(task)"
+            (click)="onDelete(task._id)"
+            class="icon-btn delete-btn"
             title="Remove Task Permanently"
           >
             🗑️ Delete

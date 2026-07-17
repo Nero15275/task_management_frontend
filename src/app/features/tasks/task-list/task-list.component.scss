@@ -1,5 +1,7 @@
 @import "../../../../styles.scss";
 
+$transition-speed: 0.25s;
+
 .task-list-wrapper {
   display: flex;
   flex-direction: column;
@@ -34,6 +36,27 @@
     }
   }
 }
+
+.navbar-action-btn {
+      background-color: $primary-color;
+      color: white;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: background $transition-speed ease;
+
+      &:hover {
+        background-color: $primary-hover;
+      }
+
+      .btn-icon {
+        font-size: 1rem;
+      }
+    }
 
 // Interactive filter navigation toggle
 .task-filters {
@@ -159,7 +182,7 @@
       color: $text-secondary;
       font-weight: 500;
     }
-    
+
     .meta-value {
       color: $text-primary;
       font-weight: 600;
@@ -199,7 +222,7 @@
     font-size: 0.825rem;
     padding: 0.35rem 0.6rem;
     border-radius: 6px;
-    
+
     &:hover {
       background-color: lighten($color-completed, 44%);
     }

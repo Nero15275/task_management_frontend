@@ -2,18 +2,19 @@
   <div class="list-controls">
     <div class="search-box">
       <span class="search-icon">🔍</span>
-      <input 
-        type="text" 
-        placeholder="Search users by name or email..." 
+      <input
+        type="text"
+        placeholder="Search users by name or email..."
         (input)="onSearch($event)"
       />
     </div>
 
     <div class="filter-box">
+      <!-- Standardized option text values to make runtime string equality clean -->
       <select (change)="onRoleFilterChange($event)">
         <option value="all">All Roles</option>
         <option value="Manager">Managers</option>
-        <option value="Team Lead">Team Leads</option>
+        <option value="Team_lead">Team Leads</option>
         <option value="Employee">Employees</option>
       </select>
     </div>
@@ -35,8 +36,9 @@
           <tr *ngFor="let user of filteredUsers" class="user-row">
             <td>
               <div class="user-profile-meta">
+                <!-- Defensive fallback check in case username string is temporarily empty -->
                 <div class="user-avatar-small">
-                  {{ user.username.substring(0, 2) | uppercase }}
+                  {{ (user.username ? user.username.substring(0, 2) : 'U') | uppercase }}
                 </div>
                 <div class="user-identity">
                   <span class="user-name">{{ user.username }}</span>
@@ -48,6 +50,7 @@
               <span class="user-email">{{ user.email }}</span>
             </td>
             <td>
+              <!-- Binds data-role cleanly for dynamic class applications in CSS styling -->
               <span class="role-badge" [attr.data-role]="user.role">
                 {{ user.role }}
               </span>
@@ -55,15 +58,16 @@
             <td>
               <span class="scope-text">
                 <ng-container [ngSwitch]="user.role">
-                  <span *ngSwitchCase="'Manager'">Full directory visibility & task reassignment</span>
-                  <span *ngSwitchCase="'Team Lead'">Manages assigned team members' tasks</span>
-                  <span *ngSwitchCase="'Employee'">Self-assigned tasks only</span>
+                  <span *ngSwitchCase="'manager'">Full directory visibility & task reassignment</span>
+                  <span *ngSwitchCase="'team_lead'">Manages assigned team members' tasks</span>
+                  <span *ngSwitchCase="'employee'">Self-assigned tasks only</span>
+                  <span *ngSwitchDefault>Standard resource limits</span>
                 </ng-container>
               </span>
             </td>
             <td>
-              <div class="action-buttons">
-                <button (click)="onEditUser(user)" class="btn-action edit" title="Edit Profile/Role">
+              <div class="action-buttons"*ngIf="user.role !=UserRole.Manager">
+                <button  (click)="onEditUser(user)" class="btn-action edit" title="Edit Profile/Role">
                   ✏️ Edit
                 </button>
                 <button (click)="onDeleteUser(user._id)" class="btn-action delete" title="Delete User Account">
@@ -73,6 +77,7 @@
             </td>
           </tr>
 
+          <!-- Displayed accurately when no values pass filter execution checks -->
           <tr *ngIf="filteredUsers.length === 0">
             <td colspan="5" class="empty-table-state">
               <p>No users match your active search or filter criteria.</p>

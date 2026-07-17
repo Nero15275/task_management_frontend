@@ -1,62 +1,91 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './features/auth/login/login.component';
-import { RegisterComponent } from './features/auth/register/register.component';
-import { DashboardComponent } from './features/dashboard/dashboard/dashboard.component';
+import { authGuard } from './core/auth/auth.guard';
+import { roleGuard } from './core/role/role.guard';
+import { UserRole } from './core/models/user'; // Adjust path if necessary
+
 import { DashboardLayoutComponent } from './layouts/dashboard-layout/dashboard-layout.component';
 
-export const routes: Routes = [// Auth pages (no layout)
+export const routes: Routes = [
   {
     path: 'login',
-    component: LoginComponent,
+    title: 'Login - Task Manager',
+    loadComponent: () =>
+      import('./features/auth/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'register',
-    component: RegisterComponent,
+    title: 'Register - Task Manager',
+    loadComponent: () =>
+      import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
   },
 
-  // Pages with layout
   {
     path: '',
     component: DashboardLayoutComponent,
+    canActivate: [authGuard],
     children: [
+      // {
+      //   path: '',
+      //   pathMatch: 'full',
+      //   title: 'Dashboard',
+      //   loadComponent: () =>
+      //     import('./features/dashboard/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+      // },
+
       {
-        path: '',
-        pathMatch: 'full',
-        component: DashboardComponent,
+        path:'',
+        pathMatch:'full',
+        redirectTo:'tasks'
       },
       {
         path: 'users',
+        title: 'Users List',
+        canActivate: [roleGuard],
+        data: { expectedRoles: [UserRole.Manager, UserRole.TeamLead] },
         loadComponent: () =>
-          import('./features/users/user-list/user-list.component').then(
-            (m) => m.UserListComponent
-          ),
+          import('./features/users/user-list/user-list.component').then((m) => m.UserListComponent),
       },
       {
-        path: 'createEditusers',
+        path: 'users/manage',
+        title: 'Manage User',
+        canActivate: [roleGuard],
+        data: { expectedRoles: [UserRole.Manager] }, // Only managers can create new base users
         loadComponent: () =>
-          import('./features/users/user-form/user-form.component').then(
-            (m) => m.UserFormComponent
-          ),
+          import('./features/users/user-form/user-form.component').then((m) => m.UserFormComponent),
       },
+      {
+        path: 'users/manage/:id',
+        title: 'Edit User',
+        canActivate: [roleGuard],
+        data: { expectedRoles: [UserRole.Manager, UserRole.TeamLead] },
+        loadComponent: () =>
+          import('./features/users/user-form/user-form.component').then((m) => m.UserFormComponent),
+      },
+
+
       {
         path: 'tasks',
+        title: 'My Tasks',
         loadComponent: () =>
-          import('./features/tasks/task-list/task-list.component').then(
-            (m) => m.TaskListComponent
-          ),
+          import('./features/tasks/task-list/task-list.component').then((m) => m.TaskListComponent),
       },
-       {
-        path: 'createEdittasks',
+      {
+        path: 'tasks/manage',
+        title: 'Create Task',
         loadComponent: () =>
-          import('./features/tasks/task-form/task-form.component').then(
-            (m) => m.TaskFormComponent
-          ),
+          import('./features/tasks/task-form/task-form.component').then((m) => m.TaskFormComponent),
+      },
+      {
+        path: 'tasks/manage/:id',
+        title: 'Edit Task',
+        loadComponent: () =>
+          import('./features/tasks/task-form/task-form.component').then((m) => m.TaskFormComponent),
       },
     ],
   },
 
-//   {
-//     path: '**',
-//     redirectTo: '',
-//   }
+  {
+    path: '**',
+    redirectTo: '',
+  }
 ];

@@ -39,7 +39,7 @@
         </span>
       </div>
 
-      <button type="submit" [disabled]="loginForm.invalid" class="btn btn-primary">
+      <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn btn-primary">
         Sign In
       </button>
 

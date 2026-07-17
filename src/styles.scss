@@ -1,6 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
-/* frontend/src/styles.scss */
 
+@import "primeng/resources/themes/lara-light-blue/theme.css"; 
+@import "primeng/resources/primeng.min.css";
+@import "primeicons/primeicons.css";
 // Modern Color Palette
 $primary-color: #4f46e5;      // Indigo
 $primary-hover: #4338ca;
