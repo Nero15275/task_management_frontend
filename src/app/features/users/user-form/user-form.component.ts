@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { filter, map, Subject, takeUntil } from 'rxjs';
 import { User, UserRole } from '../../../core/models/user';
 import { AuthService } from '../../auth/auth.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-user-form',
@@ -31,7 +32,8 @@ export class UserFormComponent {
     private userService: UserService,
     private storageService:StorageService,
     private authService:AuthService,
-    private router : Router
+    private router : Router,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -145,17 +147,19 @@ export class UserFormComponent {
   callService(payload){
      if(!this.isEditMode){
         this.authService.register(payload).subscribe({
-          next:(res)=>{
+          next:(res:any)=>{
+           this.toastService.success(res.message,'');
           this.onCancel()
         },error:(err)=>{
-          confirm("Something went wrong")
+          this.toastService.error('',err.message);
         }})
       }else{
         this.userService.updateUser(this.userObject._id,payload).subscribe({
-          next:(res)=>{
+          next:(res:any)=>{
+            this.toastService.success(res.message,'');
           this.onCancel()
         },error:(err)=>{
-          confirm("Something went wrong")
+          this.toastService.error('',err.message);
         }})
       }
   }

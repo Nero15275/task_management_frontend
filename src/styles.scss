@@ -1,30 +1,34 @@
-
-@import "primeng/resources/themes/lara-light-blue/theme.css"; 
+// 1. PrimeNG Core Framework Styles
+@import "primeng/resources/themes/lara-light-blue/theme.css";
 @import "primeng/resources/primeng.min.css";
 @import "primeicons/primeicons.css";
-// Modern Color Palette
-$primary-color: #4f46e5;      // Indigo
+
+:root {
+    --font-family: 'Inter', sans-serif;
+}
+
+// Modern Color Palette Variables
+$primary-color: #4f46e5;
 $primary-hover: #4338ca;
-$background-dark: #0f172a;    // Dark Slate
-$background-light: #f8fafc;   // Cool Grey
+$background-dark: #0f172a;
+$background-light: #f8fafc;
 $surface-color: #ffffff;
 $border-color: #e2e8f0;
 $text-primary: #1e293b;
 $text-secondary: #64748b;
 
-// Status Badge Colors
-$color-pending: #f59e0b;      // Amber
-$color-completed: #10b981;    // Emerald
+$color-pending: #f59e0b;
+$color-completed: #10b981;
 
-// Global Box Sizing & Defaults
+
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
 }
 
 body {
+  margin: 0;
   background-color: $background-light;
   color: $text-primary;
   min-height: 100vh;
@@ -38,8 +42,19 @@ a {
   }
 }
 
+
+// button:not([class^="p-"]) {
+
+//   cursor: pointer;
+//   border: none;
+//   background: none;
+// }
 button {
-  cursor: pointer;
-  border: none;
-  background: none;
+
+cursor: pointer;
+
+border: none;
+
+
+
 }

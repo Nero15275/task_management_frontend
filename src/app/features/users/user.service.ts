@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment.development';
 import { User } from '../../core/models/user';
+import { APP_CONFIG } from 'src/app/core/config/app.config.token';
 
 
 
@@ -11,8 +11,9 @@ import { User } from '../../core/models/user';
   providedIn: 'root'
 })
 export class UserService {
+    private config = inject(APP_CONFIG);
 
-  private readonly baseUrl = `${environment.apiUrl}v1/users`;
+  private readonly baseUrl = `${this.config.apiUrl}v1/users`;
 
 
   private readonly userListSubject = new BehaviorSubject<User[]>([]);

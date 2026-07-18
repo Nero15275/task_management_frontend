@@ -13,6 +13,7 @@ import { GetAllTask, TaskStatus } from '../../../core/models/task';
 import { UserService } from '../../users/user.service';
 import { User, UserRole } from '../../../core/models/user';
 import { Router } from '@angular/router';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-task-form',
@@ -36,7 +37,8 @@ export class TaskFormComponent {
     private taskService: TaskService,
     private userService: UserService,
     private storageService:StorageService,
-    private router : Router
+    private router : Router,
+    private toastService :ToastService
   ) {}
   ngOnInit() {
     this.createForm();
@@ -60,7 +62,7 @@ export class TaskFormComponent {
             .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: (users) =>
-                console.log('Successfully loaded and flattened users:', users),
+                console.log('Successfully loaded and flattened users:'),
               error: (err) => console.error('Failed to load reporting users:', err),
             });
 
@@ -101,10 +103,11 @@ export class TaskFormComponent {
           payload = cleanPayload;
         }
         this.taskService.updateTask(this.taskObject._id,payload).subscribe({
-          next:(res)=>{
+          next:(res:any)=>{
+            this.toastService.success('','Task Updated');
           this.onCancel()
         },error:(err)=>{
-          confirm("Something went wrong")
+          this.toastService.success('','something went wrong');
         }
       });
       }else{
@@ -116,10 +119,12 @@ export class TaskFormComponent {
         payload.assignedTo=this.taskForm.get('assignedTo').value
       }
       this.taskService.createTask(payload).subscribe({
-          next:(res)=>{
+          next:(res:any)=>{
+            this.toastService.success('','Task created');
           this.onCancel()
         },error:(err)=>{
-          confirm("Something went wrong")
+
+          this.toastService.success('','something went wrong');
         }
       });
       }

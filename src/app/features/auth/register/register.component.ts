@@ -6,6 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { catchError, exhaustMap, of, Subject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 
 @Component({
@@ -24,30 +25,30 @@ registerForm!: FormGroup;
 
   isLoading = false;
   errorMessage = '';
-  constructor(private fb: FormBuilder,private authService: AuthService,private router: Router) {
+  constructor(private fb: FormBuilder,private authService: AuthService,private router: Router,private toastService:ToastService) {
 
         this.registerAction$.pipe(
-          
-          takeUntilDestroyed(), 
-          
+
+          takeUntilDestroyed(),
+
           exhaustMap(credentials => {
             this.isLoading = true;
             this.errorMessage = '';
-            
+
             return this.authService.register(credentials).pipe(
-              
+
               catchError(err => {
                 this.errorMessage = err.error?.message || 'registration failed. Please try again.';
+                this.toastService.error('', this.errorMessage);
                 this.isLoading = false;
                 return of(null);
               })
             );
           })
-        ).subscribe((response) => {
+        ).subscribe((response:any) => {
           if (response) {
             this.isLoading = false;
-            // Success! Redirect to dashboard, etc.
-            console.log('Logged in successfully', response);
+            this.toastService.success('', response.message);
             this.router.navigateByUrl('/')
           }
         });
