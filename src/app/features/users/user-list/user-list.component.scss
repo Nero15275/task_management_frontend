@@ -1,11 +1,35 @@
 @import '../../../../styles';
 
+$transition-speed: 0.25s;
+
 .user-list-container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
+.navbar-action-btn {
+      background-color: $primary-color;
+      color: white;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: background $transition-speed ease;
+      width: 9rem;
+      align-self: flex-end;
+
+      &:hover {
+        background-color: $primary-hover;
+      }
+
+      .btn-icon {
+        font-size: 1rem;
+      }
+    }
 // 1. Controls Styling (Search & Filters)
 .list-controls {
   display: flex;
@@ -45,7 +69,12 @@
     }
   }
 
-  .filter-box select {
+
+}
+
+.filter-box {
+  align-self: flex-end;
+  select {
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
     border: 1px solid $border-color;
@@ -55,12 +84,12 @@
     cursor: pointer;
     outline: none;
 
+
     &:focus {
       border-color: $primary-color;
     }
   }
 }
-
 // 2. Table Layout
 .table-card {
   background: white;

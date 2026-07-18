@@ -9,7 +9,13 @@
       />
     </div>
 
-    <div class="filter-box">
+    <button class="navbar-action-btn" title="Create User" (click)="onCreateUser()">
+          <span class="btn-icon">＋</span> Create User
+        </button>
+
+  </div>
+
+<div class="filter-box">
       <!-- Standardized option text values to make runtime string equality clean -->
       <select (change)="onRoleFilterChange($event)">
         <option value="all">All Roles</option>
@@ -18,7 +24,6 @@
         <option value="Employee">Employees</option>
       </select>
     </div>
-  </div>
 
   <div class="table-card">
     <div class="table-responsive">
@@ -66,7 +71,7 @@
               </span>
             </td>
             <td>
-              <div class="action-buttons"*ngIf="user.role !=UserRole.Manager">
+              <div class="action-buttons"*ngIf="user.role!=UserRole.Manager||currrentUser.role==UserRole.SUPER_ADMIN ">
                 <button  (click)="onEditUser(user)" class="btn-action edit" title="Edit Profile/Role">
                   ✏️ Edit
                 </button>

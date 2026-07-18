@@ -1,0 +1,168 @@
+// Variables for easy customization
+$primary-color: #4f46e5;
+$primary-hover: #4338ca;
+$bg-container: #ffffff;
+$bg-body: #f9fafb;
+$text-main: #111827;
+$text-muted: #4b5563;
+$text-label: #6b7280;
+$border-color: #e5e7eb;
+$success-bg: #d1fae5;
+$success-text: #065f46;
+$radius: 12px;
+
+.profile-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: $text-main;
+
+  // Header Layout
+  .profile-header {
+    background: $bg-container;
+    border: 1px solid $border-color;
+    border-radius: $radius;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+
+    @media (max-width: 600px) {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .profile-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, $primary-color, #818cf8);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      font-weight: 600;
+    }
+
+    .profile-title {
+      flex-grow: 1;
+
+      h2 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        border-radius: 50px;
+        background: #f3f4f6;
+        color: $text-muted;
+
+        &.active {
+          background: $success-bg;
+          color: $success-text;
+        }
+      }
+    }
+  }
+
+  // Content Details Grid
+  .profile-content {
+    background: $bg-container;
+    border: 1px solid $border-color;
+    border-radius: $radius;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    h3 {
+      margin: 0 0 1.5rem 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border-bottom: 1px solid $border-color;
+      padding-bottom: 0.75rem;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+
+      @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+
+      label {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: $text-label;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .value {
+        font-size: 1rem;
+        color: $text-main;
+        word-break: break-all;
+
+        &.code {
+          font-family: monospace;
+          background: #f3f4f6;
+          padding: 0.15rem 0.4rem;
+          border-radius: 4px;
+          font-size: 0.9rem;
+          width: fit-content;
+        }
+
+        &.capitalize {
+          text-transform: capitalize;
+        }
+
+        &.text-muted {
+          color: $text-label;
+          font-style: italic;
+        }
+      }
+    }
+  }
+
+  // Button Utility
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &-primary {
+      background: $primary-color;
+      color: white;
+
+      &:hover {
+        background: $primary-hover;
+      }
+    }
+
+    .icon {
+      font-size: 1rem;
+    }
+  }
+}

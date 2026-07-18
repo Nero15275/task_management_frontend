@@ -52,19 +52,20 @@ export class TaskListComponent {
 
       case UserRole.TeamLead:
 
-        return task.createdBy === userId || task.assignedTo === userId;
+        return task.createdBy._id === userId || task.assignedTo._id === userId;
 
       case UserRole.Employee:
 
-        return task.createdBy === userId;
+        return task.createdBy._id === userId;
 
       default:
         return false;
     }
   }
 
-onDelete(arg: any) {
-this.taskSevice.deleteTask(arg).subscribe({
+onDelete(task: GetAllTask) {
+  if(confirm(`Do you really want to delete ${task.title}`))
+this.taskSevice.deleteTask(task._id).subscribe({
   next:(res)=>{
     this.getAllTasks()
   },

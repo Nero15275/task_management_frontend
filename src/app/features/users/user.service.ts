@@ -20,6 +20,12 @@ export class UserService {
 
   public readonly userList$: Observable<User[]> = this.userListSubject.asObservable();
 
+  private readonly userSubject = new BehaviorSubject<User>({}as User);
+
+
+  public readonly userSubject$: Observable<User> = this.userSubject.asObservable();
+
+
   constructor(private http: HttpClient) {}
 
 
@@ -42,20 +48,53 @@ export class UserService {
     public getAllUsers(): Observable<{data:User[],success:boolean}> {
     const url = `${this.baseUrl}/`;
 
-    return this.http.get<any>(url).pipe(tap((response)=>{
+    return this.http.get<{data:User[],success:boolean}>(url).pipe(tap((response)=>{
+      this.userListSubject.next(response.data);
+    }))
+
+  }
+      public getManagers(): Observable<{data:User[],success:boolean}> {
+    const url = `${this.baseUrl}/managers`;
+
+    return this.http.get<{data:User[],success:boolean}>(url).pipe(tap((response)=>{
       this.userListSubject.next(response.data);
     }))
 
   }
 
+   getUserById(id:string){
+    const url = `${this.baseUrl}/`;
+    return this.http.get<{data:User,success:boolean}>(url)
+  }
+  deleteUser(id:string){
+     const url = `${this.baseUrl}/${id}`;
+    return this.http.delete(url)
+  }
+   updateUser(id:string,payload:Partial<User>){
+     const url = `${this.baseUrl}/${id}`;
+    return this.http.patch(url,payload)
+  }
+
+//helper functions
 
   public get currentUserList(): User[] {
+
     return this.userListSubject.getValue();
   }
 
 
   public clearUserList(): void {
     this.userListSubject.next([]);
+  }
+
+  public get currentUserForEdit(): User {
+
+    return this.userSubject.getValue();
+  }
+
+
+  public setUserForEdit(user:User|null): void {
+    this.userSubject.next(user);
   }
 
 

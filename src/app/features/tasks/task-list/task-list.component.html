@@ -63,7 +63,7 @@
       <div class="task-metadata">
         <div class="meta-row">
           <span class="meta-label">Created By:</span>
-          <span class="meta-value font-highlight">{{ task.createdBy?.username || 'System' }}</span>
+          <span class="meta-value font-highlight">{{ task.createdBy.username || 'System' }}</span>
         </div>
         <div class="meta-row">
           <span class="meta-label">Assigned To:</span>
@@ -97,7 +97,7 @@
           <!-- Delete visibility constrained dynamically via TS role properties -->
           <button
             *ngIf="canUserDeleteTask(task)"
-            (click)="onDelete(task._id)"
+            (click)="onDelete(task)"
             class="icon-btn delete-btn"
             title="Remove Task Permanently"
           >

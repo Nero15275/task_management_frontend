@@ -20,6 +20,7 @@ export interface LoginResponse {
   data: AuthData;
 }
 export  enum UserRole {
+  SUPER_ADMIN = "super_admin",
   Manager = 'manager',
   TeamLead = 'team_lead',
   Employee = 'employee'

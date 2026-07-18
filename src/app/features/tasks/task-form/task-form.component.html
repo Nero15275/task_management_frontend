@@ -7,14 +7,14 @@
 
   <!-- Main Reactive Form Initialization -->
   <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="reactive-task-form">
-    
+
     <!-- 1. Title Form Group Input -->
     <div class="form-group">
       <label for="title">Task Title</label>
-      <input 
-        id="title" 
-        type="text" 
-        formControlName="title" 
+      <input
+        id="title"
+        type="text"
+        formControlName="title"
         placeholder="e.g., Optimize Database Production Indexes"
         [class.invalid-field]="taskForm.get('title')?.touched && taskForm.get('title')?.invalid"
       />
@@ -26,10 +26,10 @@
     <!-- 2. Description Textarea Control -->
     <div class="form-group">
       <label for="description">Detailed Description</label>
-      <textarea 
-        id="description" 
-        formControlName="description" 
-        rows="4" 
+      <textarea
+        id="description"
+        formControlName="description"
+        rows="4"
         placeholder="Provide parameters, steps, and execution requirements..."
         [class.invalid-field]="taskForm.get('description')?.touched && taskForm.get('description')?.invalid"
       ></textarea>
@@ -40,7 +40,7 @@
 
     <!-- 3. Dynamic Assignee Dropdown Selection (Role Guarded Viewports) -->
     <!-- Displayed solely to Managers and Team Leads per specification requirements -->
-    <div class="form-group" *ngIf="currentUserRole === 'Manager' || currentUserRole === 'Team Lead'">
+    <div class="form-group" *ngIf="currentUser.role === UserRole.Manager || currentUser.role === UserRole.TeamLead">
       <label for="assignedTo">Task Assignee Target</label>
       <select id="assignedTo" formControlName="assignedTo">
         <option value="">-- Direct Self-Assignment --</option>
@@ -49,14 +49,14 @@
         </option>
       </select>
       <div class="role-scope-tip">
-        ℹ️ 
-        <span *ngIf="currentUserRole === 'Manager'">Managers can distribute task loads to anyone globally.</span>
-        <span *ngIf="currentUserRole === 'Team Lead'">Team Leads assign tasks internally to teammates or self.</span>
+        ℹ️
+        <span *ngIf="currentUser.role === UserRole.Manager">Managers can distribute task loads to anyone globally.</span>
+        <span *ngIf="currentUser.role === UserRole.TeamLead">Team Leads assign tasks internally to teammates or self.</span>
       </div>
     </div>
 
     <!-- Inline Info State Box for Employees -->
-    <div class="employee-notice-box" *ngIf="currentUserRole === 'Employee'">
+    <div class="employee-notice-box" *ngIf="currentUser.role === UserRole.Employee">
       <span class="notice-icon">👤</span>
       <p><strong>Note:</strong> As an Employee, this newly generated assignment task automatically links and assigns directly to your individual queue.</p>
     </div>
@@ -65,8 +65,10 @@
     <div class="form-group">
       <label for="status">Initial Status State</label>
       <select id="status" formControlName="status">
-        <option value="pending">Pending (Awaiting Action)</option>
-        <option value="completed">Completed (Resolved)</option>
+        <option value="">-- Set status --</option>
+          <option *ngFor="let sts of taskStatus" [value]="sts">
+          {{ sts }}
+        </option>
       </select>
     </div>
 

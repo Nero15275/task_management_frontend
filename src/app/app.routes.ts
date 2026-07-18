@@ -41,7 +41,7 @@ export const routes: Routes = [
         path: 'users',
         title: 'Users List',
         canActivate: [roleGuard],
-        data: { expectedRoles: [UserRole.Manager, UserRole.TeamLead] },
+        data: { expectedRoles: [UserRole.Manager, UserRole.TeamLead,UserRole.SUPER_ADMIN] },
         loadComponent: () =>
           import('./features/users/user-list/user-list.component').then((m) => m.UserListComponent),
       },
@@ -49,38 +49,50 @@ export const routes: Routes = [
         path: 'users/manage',
         title: 'Manage User',
         canActivate: [roleGuard],
-        data: { expectedRoles: [UserRole.Manager] }, // Only managers can create new base users
+        data: { expectedRoles: [UserRole.Manager,UserRole.TeamLead,UserRole.SUPER_ADMIN] }, // Only managers can create new base users
         loadComponent: () =>
           import('./features/users/user-form/user-form.component').then((m) => m.UserFormComponent),
       },
-      {
-        path: 'users/manage/:id',
-        title: 'Edit User',
-        canActivate: [roleGuard],
-        data: { expectedRoles: [UserRole.Manager, UserRole.TeamLead] },
-        loadComponent: () =>
-          import('./features/users/user-form/user-form.component').then((m) => m.UserFormComponent),
+      // {
+      //   path: 'users/manage/:id',
+      //   title: 'Edit User',
+      //   canActivate: [roleGuard],
+      //   data: { expectedRoles: [UserRole.Manager, UserRole.TeamLead] },
+      //   loadComponent: () =>
+      //     import('./features/users/user-form/user-form.component').then((m) => m.UserFormComponent),
+      // },
+        {
+        path: 'profile',
+        title: 'Profile',
+          loadComponent: () =>
+            import('./features/profile/profile-view/profile-view.component').then((m) => m.ProfileViewComponent),
       },
 
 
       {
         path: 'tasks',
         title: 'My Tasks',
+        canActivate: [roleGuard],
+        data: { expectedRoles: [UserRole.Manager,UserRole.TeamLead,UserRole.Employee] },
         loadComponent: () =>
           import('./features/tasks/task-list/task-list.component').then((m) => m.TaskListComponent),
       },
       {
         path: 'tasks/manage',
         title: 'Create Task',
+         canActivate: [roleGuard],
+        data: { expectedRoles: [UserRole.Manager,UserRole.TeamLead,UserRole.Employee] },
         loadComponent: () =>
           import('./features/tasks/task-form/task-form.component').then((m) => m.TaskFormComponent),
       },
-      {
-        path: 'tasks/manage/:id',
-        title: 'Edit Task',
-        loadComponent: () =>
-          import('./features/tasks/task-form/task-form.component').then((m) => m.TaskFormComponent),
-      },
+      // {
+      //   path: 'tasks/manage/:id',
+      //   title: 'Edit Task',
+      //   canActivate: [roleGuard],
+      //   data: { expectedRoles: [UserRole.Manager,UserRole.TeamLead,UserRole.Employee] },
+      //   loadComponent: () =>
+      //     import('./features/tasks/task-form/task-form.component').then((m) => m.TaskFormComponent),
+      // },
     ],
   },
 

@@ -24,6 +24,10 @@ export const roleGuard: CanActivateFn = (route, state) => {
       return true;
     }
   }
+  if(rawUserRole===UserRole.SUPER_ADMIN){
+    router.navigate(['users']);
+    return false
+  }
 
   // If user role is not authorized or not found, redirect to dashboard
   router.navigate(['/']);

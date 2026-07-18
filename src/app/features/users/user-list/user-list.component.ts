@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../user.service';
 import { Subject, takeUntil } from 'rxjs';
 import { User, UserRole } from '../../../core/models/user';
+import { StorageService } from '../../../core/services/storage.service';
 
 @Component({
   selector: 'app-user-list',
@@ -14,13 +15,12 @@ import { User, UserRole } from '../../../core/models/user';
 })
 export class UserListComponent {
 UserRole=UserRole
-public users$ = this.userService.userList$;
-constructor(private router: Router,private userService :UserService) {}
+ users$ = this.userService.userList$;
 
 private allUsers: User[] = [];
 
   // Array bound to the *ngFor loop in your template
-  public filteredUsers: User[] = [];
+   filteredUsers: User[] = [];
 
   // Active filter states
   private searchQuery: string = '';
@@ -28,11 +28,14 @@ private allUsers: User[] = [];
 
   // Clean subscription management
   private destroy$ = new Subject<void>();
+  currrentUser: any;
+
+  constructor(private router: Router,private userService :UserService,private storageService:StorageService) {}
 
 
 
   ngOnInit(): void {
-    // Subscribe to the behavior subject to get immediate updates whenever it shifts
+    this.getInitData()
     this.userService.userList$
       .pipe(takeUntil(this.destroy$))
       .subscribe((users) => {
@@ -41,36 +44,62 @@ private allUsers: User[] = [];
       });
   }
 
-  /**
-   * Captures changes in the search input box.
-   */
-  public onSearch(event: Event): void {
+  getInitData(){
+    this.currrentUser = this.storageService.getUser();
+    if (this.currrentUser.role != UserRole.Manager&&this.currrentUser.role != UserRole.SUPER_ADMIN) {
+      this.userService
+        .loadReportingUsers()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (users) =>
+            console.log('Successfully loaded and flattened users:', users),
+          error: (err) => console.error('Failed to load reporting users:', err),
+        });
+    }else if(this.currrentUser.role == UserRole.SUPER_ADMIN){
+      this.userService
+        .getManagers()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (users) =>
+            console.log('Successfully loaded and flattened users:', users),
+          error: (err) => console.error('Failed to load managers:', err),
+        });
+    }
+    else {
+      this.userService
+        .getAllUsers()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (users) =>
+            console.log('Successfully loaded and flattened users:', users),
+          error: (err) => console.error('Failed to load all users:', err),
+        });
+    }
+  }
+
+   onSearch(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     this.searchQuery = inputElement.value.toLowerCase().trim();
     this.applyFilters();
   }
 
-  /**
-   * Captures changes in the Role filter dropdown menu.
-   */
-  public onRoleFilterChange(event: Event): void {
+
+   onRoleFilterChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     this.selectedRole = selectElement.value;
     this.applyFilters();
   }
 
-  /**
-   * Combines both search and role criteria to derive the visible data set.
-   */
+
   private applyFilters(): void {
     this.filteredUsers = this.allUsers.filter((user) => {
-      // 1. Evaluate Search Query matching (Checks against username and email)
+
       const matchesSearch =
         !this.searchQuery ||
         user.username.toLowerCase().includes(this.searchQuery) ||
         user.email.toLowerCase().includes(this.searchQuery);
 
-      // 2. Evaluate Role matches (Normalized comparison to accommodate case differences)
+
       const matchesRole =
         this.selectedRole === 'all' ||
         user.role.toLowerCase() === this.selectedRole.toLowerCase();
@@ -79,21 +108,29 @@ private allUsers: User[] = [];
     });
   }
 
-  /**
-   * Handles action button triggering for user updates
-   */
-  public onEditUser(user: User): void {
-    console.log('Initiating editing flow for user context:', user);
-    // TODO: Wire open a modal framework or redirect to a route payload: `this.router.navigate(['/users/edit', user._id])`
+  onCreateUser(){
+    this.userService.setUserForEdit(null)
+    this.router.navigate(['users/manage'])
   }
 
-  /**
-   * Handles action button triggering for user eviction
-   */
-  public onDeleteUser(userId: string): void {
+   onEditUser(user: User): void {
+    this.userService.setUserForEdit(user)
+    this.router.navigate(['users/manage'])
+
+  }
+
+
+   onDeleteUser(userId: string): void {
     if (confirm('Are you absolute in deleting this user configuration?')) {
       console.log('Sending eviction signal for user targeting ID:', userId);
-      // TODO: Wire up to an explicit invocation: `this.userService.deleteUser(userId).subscribe(...)`
+      this.userService.deleteUser(userId).subscribe({
+        next:(data)=>{
+          this.getInitData()
+        },
+        error:(err)=>{
+          confirm('Something went wrong')
+        }
+      })
     }
   }
 

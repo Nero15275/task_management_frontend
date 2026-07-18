@@ -1,0 +1,55 @@
+<div class="profile-container">
+  <!-- Profile Header Card -->
+  <div class="profile-header">
+    <div class="profile-avatar">
+      {{ currrentUser.username.charAt(0).toUpperCase() || 'U' }}
+    </div>
+    <div class="profile-title">
+      <h2>{{ currrentUser.username }}</h2>
+      <span class="badge" [class.active]="currrentUser.isActive">
+        {{ currrentUser.isActive ? 'Active Account' : 'Inactive' }}
+      </span>
+    </div>
+  <div class="profile-actions" *ngIf="currrentUser.role!=userRole.SUPER_ADMIN">
+      <button class="btn btn-primary" (click)="onEditProfile()">
+        <span class="icon">✎</span> Edit Profile
+      </button>
+    </div>
+  </div>
+
+  <!-- Profile Details Grid -->
+  <div class="profile-content">
+    <h3>Account Details</h3>
+    <div class="details-grid">
+      <div class="detail-item">
+        <label>Employee ID</label>
+        <span class="value code">{{ currrentUser._id }}</span>
+      </div>
+
+      <div class="detail-item">
+        <label>Email Address</label>
+        <span class="value">{{ currrentUser.email }}</span>
+      </div>
+
+      <div class="detail-item">
+        <label>Role</label>
+        <span class="value capitalize">{{ currrentUser.role }}</span>
+      </div>
+
+      <div class="detail-item">
+        <label>Reports To</label>
+        <span class="value text-muted">{{ reportingManager?.username ??'None' }}</span>
+      </div>
+
+      <div class="detail-item">
+        <label>Created On</label>
+        <span class="value">{{ currrentUser.createdAt | date:'medium' }}</span>
+      </div>
+
+      <div class="detail-item">
+        <label>Last Updated</label>
+        <span class="value">{{ currrentUser.updatedAt | date:'medium' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

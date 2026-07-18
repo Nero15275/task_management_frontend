@@ -12,7 +12,7 @@
         <span class="menu-text">Overview Feed</span>
       </a> -->
 
-      <a routerLink="/users" routerLinkActive="active" class="menu-item" *ngIf="currentUserRole!=userRole.Employee">
+      <a routerLink="/users" routerLinkActive="active" class="menu-item" *ngIf="currrentUser.role!=userRole.Employee">
         <span class="menu-icon">👥</span>
         <span class="menu-text">Team Directory</span>
       </a>
@@ -22,17 +22,17 @@
         <span class="menu-text">Analytics</span>
       </a> -->
 
-      <a routerLink="/tasks" routerLinkActive="active" class="menu-item">
+      <a routerLink="/tasks" routerLinkActive="active" class="menu-item" *ngIf="currrentUser.role!=userRole.SUPER_ADMIN">
         <span class="menu-icon">⚙️</span>
-        <span class="menu-text">tasks</span>
+        <span class="menu-text">Task List</span>
       </a>
     </nav>
 
-    <div class="sidebar-footer">
-      <div class="user-avatar">RD</div>
+    <div class="sidebar-footer" (click)="viewProfile()">
+      <div class="user-avatar">{{ (currrentUser.username ? currrentUser.username.substring(0, 2) : 'U') | uppercase }}</div>
       <div class="user-details">
-        <span class="user-name">Ranit Dey</span>
-        <span class="user-role">Manager</span>
+        <span class="user-name">{{currrentUser.username}}</span>
+        <span class="user-role">{{currrentUser.role}}</span>
       </div>
     </div>
   </aside>
