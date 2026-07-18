@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
 import { CreateTaskDto, GetAllTask, Task, TaskResponse, UpdateTaskDto } from '../../core/models/task';
+import { APP_CONFIG } from 'src/app/core/config/app.config.token';
 
 
 
@@ -11,13 +11,15 @@ import { CreateTaskDto, GetAllTask, Task, TaskResponse, UpdateTaskDto } from '..
 })
 export class TaskService {
 
-  private readonly tasksUrl = `${environment.apiUrl}v1/tasks`;
+  private config = inject(APP_CONFIG);
+  private readonly tasksUrl = `${this.config.apiUrl}v1/tasks`;
 
 
   private readonly taskObjectSubject = new BehaviorSubject<GetAllTask>({} as GetAllTask);
 
 
   public readonly taskObject$: Observable<GetAllTask> = this.taskObjectSubject.asObservable();
+
 
   constructor(private http: HttpClient) {}
 

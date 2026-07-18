@@ -6,7 +6,7 @@ import { tap } from 'rxjs/operators';
 
 import { StorageService } from '../../core/services/storage.service';
 import { LoginResponse } from '../../core/models/user';
-import { environment } from '../../../environments/environment.development';
+import { APP_CONFIG } from 'src/app/core/config/app.config.token';
 
 @Injectable({
   providedIn: 'root',
@@ -16,8 +16,9 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly storageService = inject(StorageService);
   private readonly router = inject(Router);
+  private config = inject(APP_CONFIG);
 
-  private readonly authUrl = `${environment.apiUrl}v1/auth`;
+  private readonly authUrl = `${this.config.apiUrl}v1/auth`;
 
   /**
    * Registers a new user
