@@ -38,6 +38,12 @@ export const routes: Routes = [
         redirectTo:'tasks'
       },
       {
+        path:'profile/update',
+        title:'Update Profile',
+        loadComponent: () =>
+            import('./features/profile/profile-update/profile-update.component').then((m) => m.ProfileUpdateComponent),
+      },
+      {
         path: 'users',
         title: 'Users List',
         canActivate: [roleGuard],

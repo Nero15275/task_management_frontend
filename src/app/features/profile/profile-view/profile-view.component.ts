@@ -37,8 +37,8 @@ export class ProfileViewComponent {
      }
   }
 onEditProfile() {
- this.userService.setUserForEdit(this.currrentUser)
-  this.router.navigate(['users/manage'])
+
+  this.router.navigate(['profile/update'])
 
 }
 

@@ -30,7 +30,7 @@ export class AuthService {
    * Authenticates user credentials and captures session details
    */
   login(credentials: Record<string, unknown>): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.authUrl}/login`, credentials).pipe(
+    return this.http.post<LoginResponse>(`${this.authUrl}/login`, credentials,{ withCredentials: true }).pipe(
       tap((response) => {
         if (response?.data?.accessToken) {
           this.storageService.saveToken(response.data.accessToken);
@@ -65,7 +65,7 @@ export class AuthService {
    * Logs out the user by notifying the server and cleaning local storage
    */
   logout(): void {
-    this.http.get(`${this.authUrl}/logout`).subscribe({
+    this.http.get(`${this.authUrl}/logout`,{ withCredentials: true }).subscribe({
       next: () => this.clearSessionAndRedirect(),
       error: () => this.clearSessionAndRedirect(), // Force local cleanup even if API fails (e.g. token already expired)
     });

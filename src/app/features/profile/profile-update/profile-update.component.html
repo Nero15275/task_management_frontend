@@ -1,0 +1,79 @@
+<div class="profile-container">
+  <h2>Update Profile</h2>
+
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" novalidate>
+
+    <!-- Success & Error Alert Banners -->
+    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <!-- Username Input -->
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input
+        id="username"
+        type="text"
+        formControlName="username"
+        [ngClass]="{ 'is-invalid': f['username'].touched && f['username'].errors }"
+        placeholder="Enter username"
+      />
+      <div *ngIf="f['username'].touched && f['username'].errors" class="invalid-feedback">
+        <small *ngIf="f['username'].errors['required']">Username is required.</small>
+        <small *ngIf="f['username'].errors['minlength']">Username must be at least 3 characters long.</small>
+        <small *ngIf="f['username'].errors['maxlength']">Username cannot exceed 30 characters.</small>
+      </div>
+    </div>
+
+    <!-- Email Input -->
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        [ngClass]="{ 'is-invalid': f['email'].touched && f['email'].errors }"
+        placeholder="Enter email address"
+      />
+      <div *ngIf="f['email'].touched && f['email'].errors" class="invalid-feedback">
+        <small *ngIf="f['email'].errors['required']">Email is required.</small>
+        <small *ngIf="f['email'].errors['email']">Please enter a valid email address.</small>
+      </div>
+    </div>
+
+    <!-- Change Password Optional Toggle -->
+    <div class="form-checkbox">
+      <input
+        id="changePasswordToggle"
+        type="checkbox"
+        [checked]="showPasswordFields"
+        (change)="onTogglePasswordChange($event)"
+      />
+      <label for="changePasswordToggle">I want to change my password</label>
+    </div>
+
+    <!-- Conditional Password Input Layer -->
+    <div class="password-slide-zone" *ngIf="showPasswordFields">
+      <div class="form-group">
+        <label for="password">New Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          [ngClass]="{ 'is-invalid': f['password'].touched && f['password'].errors }"
+          placeholder="Enter new password"
+        />
+        <div *ngIf="f['password'].touched && f['password'].errors" class="invalid-feedback">
+          <small *ngIf="f['password'].errors['required']">Password is required if you want to update it.</small>
+          <small *ngIf="f['password'].errors['minlength']">Password must be at least 8 characters long.</small>
+          <small *ngIf="f['password'].errors['maxlength']">Password cannot exceed 128 characters.</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Action Area -->
+    <button type="submit" [disabled]="profileForm.invalid || isSubmitting" class="btn-submit">
+      {{ isSubmitting ? 'Updating...' : 'Save Changes' }}
+    </button>
+
+  </form>
+</div>
