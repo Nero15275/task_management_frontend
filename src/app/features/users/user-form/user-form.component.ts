@@ -47,7 +47,7 @@ export class UserFormComponent {
         this.userForm.get("reportsTo").addValidators(Validators.required)
         this.setRollDropDown()
       }
-      console.log(this.userForm)
+
     })
   }
     getInitData(){
