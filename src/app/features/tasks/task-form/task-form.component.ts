@@ -107,7 +107,7 @@ export class TaskFormComponent {
             this.toastService.success('','Task Updated');
           this.onCancel()
         },error:(err)=>{
-          this.toastService.success('','something went wrong');
+          this.toastService.error('','something went wrong');
         }
       });
       }else{
@@ -124,7 +124,7 @@ export class TaskFormComponent {
           this.onCancel()
         },error:(err)=>{
 
-          this.toastService.success('','something went wrong');
+          this.toastService.error('','something went wrong');
         }
       });
       }
