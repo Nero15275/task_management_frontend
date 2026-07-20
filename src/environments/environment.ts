@@ -1,5 +1,6 @@
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:3000/api/',
+  production: true,
+  apiUrl: 'https://task-management-backend-v1wq.onrender.com/api/',
+  socketUrl: 'https://task-management-backend-v1wq.onrender.com/'
 
 };
