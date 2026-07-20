@@ -7,6 +7,7 @@ import { tap } from 'rxjs/operators';
 import { StorageService } from '../../core/services/storage.service';
 import { LoginResponse } from '../../core/models/user';
 import { APP_CONFIG } from 'src/app/core/config/app.config.token';
+import { SocketService } from 'src/app/core/socket/socket.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ export class AuthService {
   private readonly storageService = inject(StorageService);
   private readonly router = inject(Router);
   private config = inject(APP_CONFIG);
-
+  private socketService = inject(SocketService);
   private readonly authUrl = `${this.config.apiUrl}v1/auth`;
 
   /**
@@ -39,6 +40,7 @@ export class AuthService {
         if (response?.data?.user) {
           this.storageService.saveUser(response.data.user);
         }
+        this.socketService.connect();
       })
     );
   }
@@ -62,13 +64,18 @@ export class AuthService {
       );
   }
 
-  /**
-   * Logs out the user by notifying the server and cleaning local storage
-   */
+
   logout(): void {
     this.http.get(`${this.authUrl}/logout`,{ withCredentials: true }).subscribe({
-      next: () => this.clearSessionAndRedirect(),
-      error: () => this.clearSessionAndRedirect(), // Force local cleanup even if API fails (e.g. token already expired)
+      next: () => {
+        this.socketService.disconnect();
+        this.clearSessionAndRedirect()
+      },
+      error: () => {
+        this.socketService.disconnect();
+        this.clearSessionAndRedirect()
+      }
+
     });
   }
 

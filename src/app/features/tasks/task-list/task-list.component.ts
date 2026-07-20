@@ -1,3 +1,4 @@
+import { SocketService } from './../../../core/socket/socket.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
@@ -12,6 +13,7 @@ import {
 } from '../../../core/models/task';
 import { DialogService } from 'src/app/core/services/dialog.service';
 import { ToastService } from 'src/app/core/services/toast.service';
+import { merge, Observable, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-task-list',
@@ -26,23 +28,73 @@ export class TaskListComponent {
   TaskStatus = TaskStatus;
   backUpTask: GetAllTask[] = [];
   activeFilter: string = 'ALL';
+  private destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
     private storageService: StorageService,
     private taskSevice: TaskService,
     private dialogService: DialogService,
-    private toastService:ToastService
+    private toastService:ToastService,
+    private socketService:SocketService
   ) {}
   ngOnInit() {
     this.currentUser = this.storageService.getUser();
     this.getAllTasks();
+        merge(
+
+        this.socketService.onTaskCreated(),
+
+        this.socketService.onTaskUpdated(),
+
+        this.socketService.onTaskDeleted()
+
+    )
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((event) => {
+
+        // Delete Event
+  if ('taskId' in event) {
+
+    this.backUpTask = this.backUpTask.filter(
+      task => task._id !== event.taskId
+    );
+
+  } else {
+
+    // Create
+    const index = this.backUpTask.findIndex(
+      task => task._id === event._id
+    );
+
+    if (index === -1) {
+
+      this.backUpTask = [
+        event,
+        ...this.backUpTask,
+      ];
+
+    } else {
+
+      // Update
+      this.backUpTask[index] = event;
+
+      // Trigger change detection
+      this.backUpTask = [...this.backUpTask];
+    }
+  }
+
+  this.applyFilter();
+
+
+    });
+
   }
   getAllTasks() {
     this.taskSevice.getTasks().subscribe({
       next: (res) => {
-        this.filteredTasks = res.data;
         this.backUpTask = res.data;
+        this.applyFilter();
       },
       error: (err) => {
         console.log(err);
@@ -109,17 +161,32 @@ export class TaskListComponent {
   }
   changeFilter(arg0: string) {
     this.activeFilter = arg0;
-    if (arg0 === 'ALL') {
-      this.filteredTasks = this.backUpTask;
-    } else {
-      this.filteredTasks = this.backUpTask.filter(
-        (task) => task.status === arg0,
-      );
-    }
+
+    this.applyFilter();
   }
+
+  private applyFilter(): void {
+  if (this.activeFilter === 'ALL') {
+    this.filteredTasks = [...this.backUpTask];
+    return;
+  }
+
+  this.filteredTasks = this.backUpTask.filter(
+    task => task.status === this.activeFilter
+  );
+}
+
 
   createTask() {
     this.taskSevice.setTaskObject({} as GetAllTask);
     this.router.navigate(['tasks/manage']);
   }
+
+  ngOnDestroy() {
+
+    this.destroy$.next();
+
+    this.destroy$.complete();
+
+}
 }

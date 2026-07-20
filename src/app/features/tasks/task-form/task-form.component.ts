@@ -29,48 +29,50 @@ export class TaskFormComponent {
   isEditMode: boolean = false;
   private destroy$ = new Subject<void>();
   taskObject: GetAllTask;
-  taskStatus=[TaskStatus.PENDING,TaskStatus.IN_PROGRESS,TaskStatus.COMPLETED]
-  UserRole=UserRole
+  taskStatus = [
+    TaskStatus.PENDING,
+    TaskStatus.IN_PROGRESS,
+    TaskStatus.COMPLETED,
+  ];
+  UserRole = UserRole;
 
   constructor(
     private fb: FormBuilder,
     private taskService: TaskService,
     private userService: UserService,
-    private storageService:StorageService,
-    private router : Router,
-    private toastService :ToastService
+    private storageService: StorageService,
+    private router: Router,
+    private toastService: ToastService,
   ) {}
   ngOnInit() {
     this.createForm();
-    this.getInitData()
-
+    this.getInitData();
   }
-  getInitData(){
-    this.currentUser=this.storageService.getUser()
-     this.taskService.taskObject$
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((task) => {
-            this.taskObject = task;
-            if(task?._id){
-              this.isEditMode=true
-              this.patchValue()
-            }
-          });
+  getInitData() {
+    this.currentUser = this.storageService.getUser();
+    this.taskService.taskObject$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((task) => {
+        this.taskObject = task;
+        if (task?._id) {
+          this.isEditMode = true;
+          this.patchValue();
+        }
+      });
+    if (this.currentUser.role != UserRole.Employee)
+      this.userService
+        .loadReportingUsers()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (users) =>
+            console.log('Successfully loaded and flattened users:'),
+          error: (err) => console.error('Failed to load reporting users:', err),
+        });
 
-    this.userService
-            .loadReportingUsers()
-            .pipe(takeUntil(this.destroy$))
-            .subscribe({
-              next: (users) =>
-                console.log('Successfully loaded and flattened users:'),
-              error: (err) => console.error('Failed to load reporting users:', err),
-            });
-
-     this.userService.userList$
+    this.userService.userList$
       .pipe(takeUntil(this.destroy$))
       .subscribe((users) => {
         this.assignableUsers = users;
-
       });
   }
   createForm() {
@@ -78,64 +80,65 @@ export class TaskFormComponent {
       title: [, [Validators.required, Validators.min(3), Validators.max(100)]],
       description: ['', [Validators.min(3), Validators.max(100)]],
       assignedTo: [''],
-      status:['']
+      status: [''],
     });
   }
-  patchValue(){
-    this.taskForm.get('title').setValue(this.taskObject.title)
-    this.taskForm.get('description').setValue(this.taskObject.description)
-    this.taskForm.get('assignedTo').setValue(this.taskObject.assignedTo._id)
-    if(this.currentUser._id===this.taskObject.assignedTo._id){
-      this.taskForm.get('assignedTo').setValue('')
+  patchValue() {
+    this.taskForm.get('title').setValue(this.taskObject.title);
+    this.taskForm.get('description').setValue(this.taskObject.description);
+    this.taskForm.get('assignedTo').setValue(this.taskObject.assignedTo._id);
+    if (this.currentUser._id === this.taskObject.assignedTo._id) {
+      this.taskForm.get('assignedTo').setValue('');
     }
-    this.taskForm.get('status').setValue(this.taskObject.status)
+    this.taskForm.get('status').setValue(this.taskObject.status);
   }
 
   onSubmit() {
     if (this.taskForm.valid) {
-      if(this.isEditMode){
-        if(!this.taskForm.get('assignedTo').value){
-          this.taskForm.get('assignedTo').setValue(this.currentUser._id)
+      if (this.isEditMode) {
+        if (!this.taskForm.get('assignedTo').value) {
+          this.taskForm.get('assignedTo').setValue(this.currentUser._id);
         }
-        let payload = this.taskForm.getRawValue()
-        if(this,this.currentUser.role===UserRole.Employee){
+        let payload = this.taskForm.getRawValue();
+        if ((this, this.currentUser.role === UserRole.Employee)) {
           const { assignedTo, ...cleanPayload } = payload;
           payload = cleanPayload;
         }
-        this.taskService.updateTask(this.taskObject._id,payload).subscribe({
-          next:(res:any)=>{
-            this.toastService.success('','Task Updated');
-          this.onCancel()
-        },error:(err)=>{
-          this.toastService.error('','something went wrong');
+        this.taskService.updateTask(this.taskObject._id, payload).subscribe({
+          next: (res: any) => {
+            this.toastService.success('', 'Task Updated');
+            this.onCancel();
+          },
+          error: (err) => {
+            this.toastService.error('', 'something went wrong');
+          },
+        });
+      } else {
+        let payload: any = {
+          title: this.taskForm.get('title').value,
+          description: this.taskForm.get('description').value,
+        };
+        if (this.taskForm.get('assignedTo').value) {
+          payload.assignedTo = this.taskForm.get('assignedTo').value;
         }
-      });
-      }else{
-        let payload:any={
-        title:this.taskForm.get('title').value,
-        description:this.taskForm.get('description').value
-      }
-      if(this.taskForm.get('assignedTo').value){
-        payload.assignedTo=this.taskForm.get('assignedTo').value
-      }
-      this.taskService.createTask(payload).subscribe({
-          next:(res:any)=>{
-            this.toastService.success('','Task created');
-          this.onCancel()
-        },error:(err)=>{
-
-          this.toastService.error('','something went wrong');
-        }
-      });
+        this.taskService.createTask(payload).subscribe({
+          next: (res: any) => {
+            this.toastService.success('', 'Task created');
+            this.onCancel();
+          },
+          error: (err) => {
+            this.toastService.error('', 'something went wrong');
+          },
+        });
       }
     }
   }
   onCancel() {
-    this.taskService.setTaskObject(null)
-    this.router.navigate(['task'])
+    this.taskService.setTaskObject(null);
+    this.router.navigate(['task']);
   }
 
-    ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }

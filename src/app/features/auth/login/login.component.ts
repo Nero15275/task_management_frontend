@@ -17,22 +17,22 @@ export class LoginComponent {
  loginForm!: FormGroup;
  private loginAction$ = new Subject<any>();
 
-  
+
   isLoading = false;
   errorMessage = '';
 
   constructor(private fb: FormBuilder,private authService: AuthService,private router: Router) {
 
     this.loginAction$.pipe(
-      
-      takeUntilDestroyed(), 
-      
+
+      takeUntilDestroyed(),
+
       exhaustMap(credentials => {
         this.isLoading = true;
         this.errorMessage = '';
-        
+
         return this.authService.login(credentials).pipe(
-          
+
           catchError(err => {
             this.errorMessage = err.error?.message || 'Login failed. Please try again.';
             this.isLoading = false;
@@ -53,7 +53,7 @@ export class LoginComponent {
   ngOnInit() {
     this.createForm();
 
-  
+
   }
     createForm() {
     this.loginForm = this.fb.group({
@@ -61,10 +61,10 @@ export class LoginComponent {
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
-   
+
   onSubmit() {
     if (this.loginForm.valid) {
       this.loginAction$.next(this.loginForm.value);
     }
-  } 
+  }
 }
